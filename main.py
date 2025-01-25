@@ -142,20 +142,23 @@ def edit_templates():
     if clicked.get() not in ["Arpeggios", "Scales", "Bar Numbers", "Inversions"]:
         def delete_list():
             del templates[clicked.get()]
+            del original_templates[clicked.get()]
             update_dropdown()
             edit_window.destroy()
 
         delete_list_button = tk.Button(edit_window, text="Delete List", command=delete_list)
         delete_list_button.pack(pady=10)
 
-    # add reset button to restore the content of the current template to original list components
-    def reset():
-        templates[clicked.get()] = original_templates[clicked.get()][:]
+    # add reset button to restore all templates to their original list components
+    def reset_all_templates():
+        for key in templates:
+            templates[key][:] = original_templates[key][:]
         sorted_items = sorted(templates[clicked.get()], key=lambda x: (x.isdigit(), int(x) if x.isdigit() else x))
         text.delete("1.0", "end")
         text.insert("1.0", "\n".join(sorted_items))
+        print("All templates have been reset to their original state.")
 
-    reset_button = tk.Button(edit_window, text="Reset", command=reset)
+    reset_button = tk.Button(edit_window, text="Reset All Templates", command=reset_all_templates)
     reset_button.pack(pady=10)
 
     # set protocol handler for window close event to discard changes
